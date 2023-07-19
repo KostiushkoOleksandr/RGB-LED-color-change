@@ -1,0 +1,62 @@
+const int pingPin = 7;
+int red = 13;
+int blue = 12;
+int green = 11;
+
+void setup() {
+ 
+  Serial.begin(9600);
+
+  pinMode(red, OUTPUT);
+  pinMode(blue, OUTPUT);
+  pinMode(green, OUTPUT);
+}
+
+void loop() {
+  
+  long duration, inches, cm;
+
+  pinMode(pingPin, OUTPUT);
+  digitalWrite(pingPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(pingPin, HIGH);
+  delayMicroseconds(5);
+  digitalWrite(pingPin, LOW);
+
+  pinMode(pingPin, INPUT);
+  duration = pulseIn(pingPin, HIGH);
+
+  inches = microsecondsToInches(duration);
+  cm = microsecondsToCentimeters(duration);
+
+  if (inches < 10) {
+    digitalWrite(red, HIGH);
+    digitalWrite(blue, LOW);
+    digitalWrite(green, LOW);
+  } else if (inches > 50) {
+    digitalWrite(red, LOW);
+    digitalWrite(blue, LOW);
+    digitalWrite(green, HIGH);
+  } else if (inches > 10 && inches <= 50) {
+    digitalWrite(red, LOW);
+    digitalWrite(blue, HIGH);
+    digitalWrite(green, LOW);
+  }
+
+  Serial.print(inches);
+  Serial.print("in, ");
+  Serial.print(cm);
+  Serial.print("cm");
+  Serial.println();
+
+  delay(100);
+}
+
+long microsecondsToInches(long microseconds) {
+  return microseconds / 74 / 2;
+}
+
+long microsecondsToCentimeters(long microseconds) {
+  
+  return microseconds / 29 / 2;
+}
